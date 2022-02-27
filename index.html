@@ -38,45 +38,62 @@ function draw() {
 
   ma.beginPath()
 
-  for( i = 0; i < dl; i++ ) {
+  for( i = dl - 1; i >= 0; i-- ) {
 
     x = i * vw
     y = ( max - data[ i ] ) * ( c.height / range )
 
     v.fillRect( x, y, vw, vh )
-    
+
     sum = 0
 
-    if( i < dl - day ) {
-
-      for( j = 0; j < day; j++ ) {
-  
-        sum += ( max - data[ i + j ] ) * ( c.height / range )
-
-      }
-
-    } else if ( i < dl ) {
+    if( i > day ) {
 
       for( j = 0; j < day; j++ ) {
 
-        sum += ( max - data[ i - j ] ) * ( c.height / range )
+        addSum()
 
       }
+
+    } else if ( i <= day ) {
+
+      count = 0
+
+      for( j = 0; j < day; j++ ) {
+
+        if( data[ i - j ] ) {
+
+          sum += ( max - data[ i - j ] ) * ( c.height / range )
+
+          count++
+
+        }
+
+        console.log(data[i+j])
+
+      }
+
+      sum += ( ( sum * ( day - count ) ) + 1 ) / count
 
     }
-    
+
     ave.push( sum / day )
 
-    if( i == 0 ) {
+    if( i == dl - 1 ) {
 
-      ma.moveTo( 0, ave[ 0 ] )
-      
+      ma.moveTo( 
+        
+        i * vw + vw,
+        ave[ dl - i - 1 ]
+
+      )
+
     } else {
 
       ma.quadraticCurveTo(
 
-        ( i ) * vw, ave[ i ],
-        ( i ) * vw, ave[ i ]
+        i * vw, ave[ dl - i - 1 ],
+        i * vw, ave[ dl - i - 1 ]
       
       )
 
@@ -85,6 +102,14 @@ function draw() {
   }
 
   ma.stroke()
+
+}
+
+function addSum() {
+
+  sum += ( max - data[ i - j ] ) * ( c.height / range )
+
+  return sum
 
 }
 

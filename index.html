@@ -1,13 +1,12 @@
-<!DOCTYPE html><head><title>20-day moving daysrage</title></head><body><script>
+<!DOCTYPE html><head><title>20-day moving dayrage</title></head><body><script>
 
-days = 20
+day = 20
 
 data = new Float64Array( init() )
 data.reverse()
 dl = data.length
 max = Math.max.apply( Math, data )
 min = Math.min.apply( Math, data )
-averages = []
 range = max - min
 fill = .7
 
@@ -35,13 +34,11 @@ function draw() {
   ma.strokeStyle = 'red'
   ma.lineWidth = vw
 
-  drawValues()
+  ave = []
 
-}
+  ma.beginPath()
 
-async function drawValues() {
-
-  for( i = 0; i <= dl; i++ ) {
+  for( i = 0; i < dl; i++ ) {
 
     x = i * vw
     y = ( max - data[ i ] ) * ( c.height / range )
@@ -50,9 +47,9 @@ async function drawValues() {
     
     sum = 0
 
-    if( i < dl - days ) {
+    if( i < dl - day ) {
 
-      for( j = 0; j <= days; j++ ) {
+      for( j = 0; j < day; j++ ) {
   
         sum += ( max - data[ i + j ] ) * ( c.height / range )
 
@@ -60,7 +57,7 @@ async function drawValues() {
 
     } else if ( i < dl ) {
 
-      for( j = 0; j < 20; j++ ) {
+      for( j = 0; j < day; j++ ) {
 
         sum += ( max - data[ i - j ] ) * ( c.height / range )
 
@@ -68,31 +65,18 @@ async function drawValues() {
 
     }
     
-    averages.push( sum / days )
-
-  }
-
-}
-
-drawValues().then( drawMa() )
-
-function drawMa() {
-
-  ma.beginPath()
-
-  for( i = 0; i <= dl; i++ ) {
+    ave.push( sum / day )
 
     if( i == 0 ) {
 
-      ma.moveTo( 0, averages[ 0 ] )
-    
-    } else if( !( i % ( days * .5 ) ) ) {
+      ma.moveTo( 0, ave[ 0 ] )
+      
+    } else {
 
-      ma.bezierCurveTo(
+      ma.quadraticCurveTo(
 
-        (( i + days * .5 ) * vw), averages[ i ],
-        (( i + days * .5 ) * vw), averages[ i ],
-        (( i + days ) * vw), averages[ i ]
+        ( i ) * vw, ave[ i ],
+        ( i ) * vw, ave[ i ]
       
       )
 

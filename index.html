@@ -7,6 +7,7 @@ data.reverse()
 dl = data.length
 max = Math.max.apply( Math, data )
 min = Math.min.apply( Math, data )
+averages = []
 range = max - min
 fill = .7
 
@@ -34,9 +35,11 @@ function draw() {
   ma.strokeStyle = 'red'
   ma.lineWidth = vw
 
-  averages = []
+  drawValues()
 
-  ma.beginPath()
+}
+
+async function drawValues() {
 
   for( i = 0; i <= dl; i++ ) {
 
@@ -67,34 +70,34 @@ function draw() {
     
     averages.push( sum / days )
 
+  }
+
+}
+
+drawValues().then( drawMa() )
+
+function drawMa() {
+
+  ma.beginPath()
+
+  for( i = 0; i <= dl; i++ ) {
+
     if( i == 0 ) {
 
       ma.moveTo( 0, averages[ 0 ] )
     
-    } else if( !( i % days ) ) {
+    } else if( !( i % ( days * .5 ) ) ) {
 
       ma.bezierCurveTo(
 
-        ( i - days * .5 ) * vw, averages[ i - days ],
-        ( i - days * .5 ) * vw, averages[ i ],
-        i * vw + vw, averages[ i ]
+        (( i + days * .5 ) * vw), averages[ i ],
+        (( i + days * .5 ) * vw), averages[ i ],
+        (( i + days ) * vw), averages[ i ]
       
       )
 
-      last = i
-
-    } else if( i == dl - 1 ) {
-
-      ma.bezierCurveTo(
-
-        ( i - ( i - last ) / 2 ) * vw, averages[ last ],
-        last * vw, averages[ i ],
-        i * vw + vw, averages[ i ]
-
-      )
-      
     }
-    
+
   }
 
   ma.stroke()

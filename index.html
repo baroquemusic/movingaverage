@@ -3,6 +3,8 @@
 days = 20
 
 data = new Float64Array( init() )
+data.reverse()
+dl = data.length
 max = Math.max.apply( Math, data )
 min = Math.min.apply( Math, data )
 range = max - min
@@ -25,61 +27,78 @@ function draw() {
 
   v = c.getContext( '2d' )
   v.fillStyle = 'black'
-  vw = c.width / data.length
+  vw = c.width / dl
   vh = c.height / range
 
   ma = c.getContext( '2d' )
   ma.strokeStyle = 'red'
   ma.lineWidth = vw
 
-  //console.log(c.height+'\n'+vh+'\n'+max+'\n'+min+'\n'+range)
-
   averages = []
 
   ma.beginPath()
-  
-  for( i = 0; i < data.length; i++ ) {
+
+  for( i = 0; i <= dl; i++ ) {
 
     x = i * vw
-    y = c.height - vh - ( max - data[ i ] ) * range / ( range / vh )
+    y = ( max - data[ i ] ) * ( c.height / range )
 
     v.fillRect( x, y, vw, vh )
-
+    
     sum = 0
 
-    for( j = 0; j < days; j++ ) {
-    
-      sum += c.height - vh - ( max - data[ i + j ] ) * range / ( range / vh )
+    if( i < dl - days ) {
+
+      for( j = 0; j <= days; j++ ) {
+  
+        sum += ( max - data[ i + j ] ) * ( c.height / range )
+
+      }
+
+    } else if ( i < dl ) {
+
+      for( j = 0; j < 20; j++ ) {
+
+        sum += ( max - data[ i - j ] ) * ( c.height / range )
+
+      }
 
     }
     
     averages.push( sum / days )
 
-    if( i == 0 ) { ma.moveTo( 0, averages[ 0 ] ) ;console.log(i,averages[i])}
+    if( i == 0 ) {
 
+      ma.moveTo( 0, averages[ 0 ] )
+    
+    } else if( !( i % days ) ) {
 
-    if( !( i % days ) && i >= days ) {
+      ma.bezierCurveTo(
 
-      ma.bezierCurveTo( 
-        ( i - days * 2 / 3 ) * vw,
-        averages[ i - days ],
-        ( i - days * 1 / 3 ) * vw,
-        averages[ i ],
-        i * vw,
-        averages[ i ]
+        ( i - days * .5 ) * vw, averages[ i - days ],
+        ( i - days * .5 ) * vw, averages[ i ],
+        i * vw + vw, averages[ i ]
+      
       )
 
-      console.log(i,averages[i])
+      last = i
 
+    } else if( i == dl - 1 ) {
+
+      ma.bezierCurveTo(
+
+        ( i - ( i - last ) / 2 ) * vw, averages[ last ],
+        last * vw, averages[ i ],
+        i * vw + vw, averages[ i ]
+
+      )
+      
     }
     
   }
 
-  console.log(averages.length)
-
   ma.stroke()
 
-  
 }
 
 function init() {

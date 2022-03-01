@@ -1,4 +1,4 @@
-<!DOCTYPE html><head><title>20-day moving dayrage</title></head><body><script>
+<!DOCTYPE html><head><title>20-day moving average</title></head><body><script>
 
 day = 20
 
@@ -12,25 +12,25 @@ fill = .7
 
 draw()
 
-window.onresize = r => { c.remove(); draw() }
+window.onresize = r => { canvas.remove(); draw() }
 
 function draw() {
 
-  c = document.createElement( 'canvas' )
-  c.width = innerWidth * fill
-  c.height = innerHeight * fill
-  c.style.border = '1px solid black'
-  c.style.position = 'absolute'
-  c.style.transform = 'translate( -50%, -50% )'
-  c.style.top = c.style.left = '50%'
-  document.body.appendChild( c )
+  canvas = document.createElement( 'canvas' )
+  canvas.width = innerWidth * fill
+  canvas.height = innerHeight * fill
+  canvas.style.border = '1px solid black'
+  canvas.style.position = 'absolute'
+  canvas.style.transform = 'translate( -50%, -50% )'
+  canvas.style.top = canvas.style.left = '50%'
+  document.body.appendChild( canvas )
 
-  v = c.getContext( '2d' )
-  v.fillStyle = 'black'
-  vw = c.width / dl
-  vh = c.height / range
+  value = canvas.getContext( '2d' )
+  value.fillStyle = 'black'
+  vw = canvas.width / dl
+  vh = canvas.height / range
 
-  ma = c.getContext( '2d' )
+  ma = canvas.getContext( '2d' )
   ma.strokeStyle = 'red'
   ma.lineWidth = vw
 
@@ -41,9 +41,10 @@ function draw() {
   for( i = dl - 1; i >= 0; i-- ) {
 
     x = i * vw
-    y = ( max - data[ i ] ) * ( c.height / range )
+    y = ( max - data[ i ] ) 
+      * ( canvas.height / range )
 
-    v.fillRect( x, y, vw, vh )
+    value.fillRect( x, y, vw, vh )
 
     sum = 0
 
@@ -51,29 +52,29 @@ function draw() {
 
       for( j = 0; j < day; j++ ) {
 
-        addSum()
+        sum += ( max - data[ i - j ] ) 
+             * ( canvas.height / range )
 
       }
 
-    } else if ( i <= day ) {
+    } else {
 
       count = 0
 
       for( j = 0; j < day; j++ ) {
 
-        if( data[ i - j ] ) {
-
-          sum += ( max - data[ i - j ] ) * ( c.height / range )
+        if( !( dataLast = data[ i - j ] ) ) {
+ 
+          dataLast = data[ i - j + count + 1 ]
 
           count++
 
         }
 
-        console.log(data[i+j])
+        sum += ( max - dataLast ) 
+             * ( canvas.height / range )
 
       }
-
-      sum += ( ( sum * ( day - count ) ) + 1 ) / count
 
     }
 
@@ -90,26 +91,16 @@ function draw() {
 
     } else {
 
-      ma.quadraticCurveTo(
+      x = i * vw
+      y = ave[ dl - i - 1 ]
 
-        i * vw, ave[ dl - i - 1 ],
-        i * vw, ave[ dl - i - 1 ]
-      
-      )
+      ma.quadraticCurveTo( x, y, x, y )
 
     }
 
   }
 
   ma.stroke()
-
-}
-
-function addSum() {
-
-  sum += ( max - data[ i - j ] ) * ( c.height / range )
-
-  return sum
 
 }
 

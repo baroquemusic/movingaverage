@@ -57,13 +57,13 @@ function draw() {
 
     } else {
 
-      count = 0
+      count = 1
 
       for( j = 0; j < day; j++ ) {
 
         if( !( dataLast = data[ i - j ] ) ) {
  
-          dataLast = data[ i - j + count + 1 ]
+          dataLast = data[ i - j + count ]
 
           count++
 

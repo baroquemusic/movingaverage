@@ -80,19 +80,15 @@ function draw() {
 
     ave.push( sum / day )
 
+    y = ave[ dl - i - 1 ]
+
     if( i == dl - 1 ) {
 
-      ma.moveTo( 
-        
-        i * vw + vw,
-        ave[ dl - i - 1 ]
-
-      )
+      ma.moveTo( i * vw + vw, y )
 
     } else {
 
       x = i * vw
-      y = ave[ dl - i - 1 ]
 
       ma.quadraticCurveTo( x, y, x, y )
 

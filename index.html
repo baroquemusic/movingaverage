@@ -41,8 +41,7 @@ function draw() {
   for( i = dl - 1; i >= 0; i-- ) {
 
     x = i * vw
-    y = ( max - data[ i ] ) 
-      * ( canvas.height / range )
+    y = ( max - data[ i ] ) * vh
 
     value.fillRect( x, y, vw, vh )
 
@@ -52,8 +51,7 @@ function draw() {
 
       for( j = 0; j < day; j++ ) {
 
-        sum += ( max - data[ i - j ] ) 
-             * ( canvas.height / range )
+        sum += ( max - data[ i - j ] ) * vh
 
       }
 
@@ -71,8 +69,7 @@ function draw() {
 
         }
 
-        sum += ( max - dataLast ) 
-             * ( canvas.height / range )
+        sum += ( max - dataLast ) * vh
 
       }
 
